@@ -1,10 +1,10 @@
-import mysql from "mysql2/promise";
+import { Connection, createConnection } from "mysql2/promise";
 
-export async function getConnection() {
+async function getConnection(): Promise<Connection> {
   try {
-    return await mysql.createConnection({
+    return await createConnection({
       host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT || "3306"),
+      port: parseInt(process.env.DB_PORT || "0000"),
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
@@ -13,3 +13,5 @@ export async function getConnection() {
     throw e;
   }
 }
+
+export default getConnection;
