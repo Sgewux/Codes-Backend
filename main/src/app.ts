@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import authRoutes from "./routes/auth.routes";
 import testRoutes from "./routes/test.routes";
+import usersRoutes from "./routes/contestants.routes";
 
 const app = express();
 
@@ -12,10 +13,12 @@ app.use(
     origin: process.env.FRONTEND_URL,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
 app.use(authRoutes);
 app.use(testRoutes);
+app.use(usersRoutes);
 
 export default app;
