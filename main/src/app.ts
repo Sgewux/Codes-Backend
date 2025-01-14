@@ -5,13 +5,15 @@ import authRoutes from "./routes/auth.routes";
 import testRoutes from "./routes/test.routes";
 import problemsRoutes from "./routes/problems.routes";
 import usersRoutes from "./routes/contestants.routes";
+import dotenv from "dotenv";
+
 
 const app = express();
-
+dotenv.config();
 app.use(
   cors({
-    credentials: false,
-    origin: "*", // This is not good and we have to make it work with an specific origin (idk why it does not)
+    credentials: true,
+    origin: process.env.FRONTEND_URL, // This is not good and we have to make it work with an specific origin (idk why it does not)
   })
 );
 
