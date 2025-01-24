@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/contestant/:handle/activity", async (req:Request, res:Response ): Promise<void> => {
   const { from, to } = req.query;
-  const [result, _] = await callProcedure("query_submission_activity", [req.params.handle, from, to]);
+  const [result, _] = await callProcedure("get_submission_activity", [req.params.handle, from, to]);
   let resBody: Array<ContestantActivity> =[];
 
   const format = (d: Date) => {
