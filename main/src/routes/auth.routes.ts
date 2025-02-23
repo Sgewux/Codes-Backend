@@ -43,11 +43,7 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
       { expiresIn: "1d" }
     );
 
-    res.cookie("token", token, {
-      httpOnly: false,
-      secure: false,
-      sameSite: "none",
-    });
+    res.cookie("token", token);
     res.json({ handle: handle });
   } catch (e: any) {
     res.status(500).json({ message: e.message });
@@ -91,15 +87,30 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
       { expiresIn: "1d" }
     );
 
-    res.cookie("token", token, {
-      httpOnly: false,
-      secure: false,
-      sameSite: "none",
-    });
+    res.cookie("token", token);
     res.json({ handle: handle });
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }
+});
+
+router.get("/verify", async (req: Request, res: Response): Promise<void> => {
+  const token: string | undefined = req.cookies.token;
+
+  if (!token) {
+    res.status(401).json({ message: "No token, authorization denied" });
+    return;
+  }
+
+  jwt.verify(token, process.env.TOKEN_SECRET || "secret", (e: any, decoded: any) => {
+    if (e) {
+      res.status(401).json({ message: e.message });
+      return;
+    }
+
+    const user: TokenData = decoded as TokenData;
+    res.json(user);
+  });
 });
 
 router.post("/logout", async (req: Request, res: Response): Promise<void> => {
