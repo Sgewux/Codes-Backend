@@ -3,9 +3,9 @@ import { checkAuth } from "../middlewares/auth.middlewares";
 
 const router = Router();
 
-router.get("/test-protected", checkAuth, async (req: Request, res: Response): Promise<void> => {
+router.get("/test-protected", checkAuth(["contestant"]), async (req: Request, res: Response): Promise<void> => {
   try {
-    res.json({ message: "Hello, World!"});
+    res.json({ message: "Hello, World!" });
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }
@@ -13,7 +13,7 @@ router.get("/test-protected", checkAuth, async (req: Request, res: Response): Pr
 
 router.get("/test", async (req: Request, res: Response): Promise<void> => {
   try {
-    res.json({ message: "Hello, World!"});
+    res.json({ message: "Hello, World!" });
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }

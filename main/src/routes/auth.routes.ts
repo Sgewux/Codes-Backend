@@ -8,13 +8,22 @@ import { TokenData } from "../types/auth";
 const router = Router();
 
 router.post("/register", async (req: Request, res: Response): Promise<void> => {
-  const { handle, password, first_name, last_name }: any = req.body;
-
   try {
+    const { handle, password, first_name, last_name }: any = req.body;
+    const [result]: RowDataPacket[] = await callProcedure(
+      "find_user_by_handle",
+      [handle]
+    );
+
+    if (result.length !== 0) {
+      res.status(400).json({ message: "The handle is already in use" });
+      return;
+    }
+
     const hashed_password: string = await bcrypt.hash(password, 10);
 
     await callProcedure(
-      "register",
+      "register_contestant",
       [
         handle,
         first_name,
@@ -25,12 +34,12 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
 
     const payload: TokenData = {
       handle: handle,
-      role: "contestant",
+      roles: ["contestant"]
     };
 
     const token: string = jwt.sign(
       payload,
-      process.env.TOKEN_SECRET || "something",
+      process.env.TOKEN_SECRET || "secret",
       { expiresIn: "1d" }
     );
 
@@ -39,39 +48,46 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
       secure: false,
       sameSite: "none",
     });
-    res.json({
-      handle: handle,
-      role: "user",
-    });
+    res.json({ handle: handle });
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }
 });
 
 router.post("/login", async (req: Request, res: Response): Promise<void> => {
-  const { handle, password }: any = req.body;
-
   try {
+    const { handle, password }: any = req.body;
     const [result]: RowDataPacket[] = await callProcedure(
       "find_user_by_handle",
       [handle]
     );
+
+    if (result.length === 0) {
+      res.status(400).json({ message: "User does not exist" });
+      return;
+    }
+
     const user = result[0];
     const isMatch: boolean = await bcrypt.compare(password, user.password);
 
-    if(!isMatch) {
+    if (!isMatch) {
       res.status(400).json({ message: "Incorrect password" });
       return;
     }
 
+    const [roles]: RowDataPacket[] = await callProcedure(
+      "get_user_roles",
+      [handle]
+    );
+
     const payload: TokenData = {
       handle: handle,
-      role: "contestant"
+      roles: roles.map((r: { role_name: string }) => r.role_name)
     };
 
     const token: string = jwt.sign(
       payload,
-      process.env.TOKEN_SECRET || "something",
+      process.env.TOKEN_SECRET || "secret",
       { expiresIn: "1d" }
     );
 
@@ -80,10 +96,7 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
       secure: false,
       sameSite: "none",
     });
-    res.json({
-      handle: handle,
-      role: "user",
-    });
+    res.json({ handle: handle });
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }
