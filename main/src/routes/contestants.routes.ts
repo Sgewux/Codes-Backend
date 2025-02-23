@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { ContestantActivity } from "../types/contestants";
+import { ContestantActivity, GetContestantsQuery, SearchContestantQuery } from "../types/contestants";
 import callProcedure from "../libs/callProcedure";
 
 const router = Router();
@@ -21,5 +21,65 @@ router.get("/contestant/:handle/activity", async (req:Request, res:Response ): P
   res.json(resBody);
   
 });
+
+router.get(
+  "/contestants", 
+  async (req:Request<any, any, any, GetContestantsQuery>, res:Response ): Promise<void> => {
+    const { pageLen, page, user, filter } = req.query;
+
+    if ((pageLen && !isNaN(pageLen)) && (page && !isNaN(page)) && (filter == "all" || filter == "friends")){
+
+      try {
+        const [count, result, _] = await callProcedure(
+          "get_user_summary_for_user",
+          [user, filter, pageLen, (page-1) * pageLen]
+        );
+  
+        let resBody = {
+          numOfPages: Math.ceil(count[0].records / pageLen),
+          contestants: result
+        };
+        res.json(resBody);
+
+      } catch (e) {
+        console.log(e);
+        res.status(500).json();
+      }
+
+    } else {
+      res.status(400).json;
+    }
+
+});
+
+router.get(
+  "/contestants/search",
+  async (req:Request<any, any, any, SearchContestantQuery>, res:Response): Promise<void> => {
+    const { pageLen, page, user, handle } = req.query;
+
+    if ((pageLen && !isNaN(pageLen)) && (page && !isNaN(page)) && handle){
+
+      try {
+        const [count, result, _] = await callProcedure(
+          "get_user_summary_by_handle",
+          [user, handle, pageLen, (page-1) * pageLen]
+        );
+  
+        let resBody = {
+          numOfPages: Math.ceil(count[0].records / pageLen),
+          contestants: result
+        };
+        res.json(resBody);
+
+      } catch (e) {
+        console.log(e);
+        res.status(500).json();
+      }
+
+    } else {
+      res.status(400).json;
+    }
+  }
+);
 
 export default router;
