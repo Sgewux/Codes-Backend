@@ -5,7 +5,9 @@ import authRoutes from "./routes/auth.routes";
 import testRoutes from "./routes/test.routes";
 import problemsRoutes from "./routes/problems.routes";
 import usersRoutes from "./routes/contestants.routes";
-import userRoutes from "./routes/user.routes"
+import userRoutes from "./routes/user.routes";
+import CRUDRoutes from "./routes/CRUD.routes";
+
 
 import dotenv from "dotenv";
 
@@ -30,6 +32,7 @@ app.use(testRoutes);
 app.use(usersRoutes);
 app.use(problemsRoutes);
 app.use(userRoutes);
+app.use(CRUDRoutes);
 
 
 
