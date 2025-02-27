@@ -22,10 +22,13 @@ app.post("/run", async (req: Request, res: Response): Promise<void> => {
     const { id, code, input, time_limit } = req.body;
     const exec: Execution = await run(id, code, input, time_limit);
 
-    res.json(exec);
-    res.status(200);
-  } catch (e: any){
-    console.log(e);
+    if (typeof id !== "number" || typeof code !== "string" || typeof input !== "string" || typeof time_limit !== "number") {
+      res.status(400).json({ error: "Invalid input parameters" });
+      return;
+    }
+    res.status(200).json(exec);
+  } catch (e: any) {
+    console.error(e);
     res.status(500);
   }
 });
