@@ -5,23 +5,35 @@ import callProcedure from "../libs/callProcedure";
 const router = Router();
 
 router.get("/contestant/:handle/activity", async (req:Request, res:Response ): Promise<void> => {
-  const { from, to } = req.query;
-  const [result, _] = await callProcedure("get_submission_activity", [req.params.handle, from, to]);
-  let resBody: Array<ContestantActivity> =[];
 
-  const format = (d: Date) => {
-    const month = (d.getMonth() + 1) >= 10 ? `${(d.getMonth() + 1)}` : `0${d.getMonth() + 1}`;
-    const day = (d.getDate() + 1) >= 10 ? `${(d.getDate())}` : `0${d.getDate()}`;
+  try {
+    const { from, to } = req.query;
+    const [usr, __] = await callProcedure("find_user_by_handle", [req.params.handle]);
+    if(usr.length != 0){
+      const [result, _] = await callProcedure("get_submission_activity", [req.params.handle, from, to]);
+      let resBody: Array<ContestantActivity> =[];
+    
+      const format = (d: Date) => {
+        const month = (d.getMonth() + 1) >= 10 ? `${(d.getMonth() + 1)}` : `0${d.getMonth() + 1}`;
+        const day = (d.getDate() + 1) >= 10 ? `${(d.getDate())}` : `0${d.getDate()}`;
+    
+        return `${d.getFullYear()}-${month}-${day}`;
+      }
+    
+      result.forEach((r:any) => resBody.push( {date: format(r["date"]), numberOfSubmissions: r["number_of_submissions"]} ));
+      res.json(resBody);
+      return;
+    } else {
+      res.status(404).json({"message":"Contestant not found"});
+    }
 
-    return `${d.getFullYear()}-${month}-${day}`;
+  } catch (e) {
+    console.log(e);
+    res.status(500).json();
   }
 
-  result.forEach((r:any) => resBody.push( {date: format(r["date"]), numberOfSubmissions: r["number_of_submissions"]} ));
-
-  res.json(resBody);
   
 });
-
 router.get(
   "/contestants", 
   async (req:Request<any, any, any, GetContestantsQuery>, res:Response ): Promise<void> => {

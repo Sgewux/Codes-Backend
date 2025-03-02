@@ -58,11 +58,16 @@ router.get("/:handle/submissions", async (req: Request<any, any, any, GetProblem
     (filter === "accepted" || filter === "all" || filter === "tried")
   ) {
     try {
-      const [result, _] = await callProcedure("get_user_submissions", [ handle, filter, pageLen, (page - 1) * pageLen ]);
-
-      let resBody = { submissions: result };
-
-      res.json(resBody);
+      const [usr, __] = await callProcedure("find_user_by_handle", [req.params.handle]);
+      if(usr.length != 0){
+        const [result, _] = await callProcedure("get_user_submissions", [ handle, filter, pageLen, (page - 1) * pageLen ]);
+  
+        let resBody = { submissions: result };
+  
+        res.json(resBody);
+      } else {
+        res.status(404).json({"message": "Contestant not found"})
+      }
     } catch (e) {
       console.log(e);
       res.status(500).json();
