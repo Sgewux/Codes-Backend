@@ -6,8 +6,8 @@ import testRoutes from "./routes/test.routes";
 import problemsRoutes from "./routes/problems.routes";
 import usersRoutes from "./routes/contestants.routes";
 import userRoutes from "./routes/user.routes";
-import CRUDRoutes from "./routes/CRUD.routes";
-import submissionRoutes from "./routes/submissions.routes"
+import submissionRoutes from "./routes/submissions.routes";
+import friend from "./routes/friend.routes"
 
 
 import dotenv from "dotenv";
@@ -33,8 +33,8 @@ app.use(testRoutes);
 app.use(usersRoutes);
 app.use(problemsRoutes);
 app.use(userRoutes);
-app.use(CRUDRoutes);
 app.use(submissionRoutes);
+app.use(friend);
 
 
 export default app;
