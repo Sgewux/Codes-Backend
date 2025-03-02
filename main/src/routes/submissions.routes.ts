@@ -40,10 +40,10 @@ router.post("/submissions", checkAuth(["contestant"]), async (req: Request, res:
     const [result1] = await callProcedure("get_problem_time_limit", [problem_id]);
     const time_limit = result1[0].time_limit_seconds;
 
+    res.status(201).json({ message: "Submission created", submissionId });
+
     const verdict: SubmissionResult = await checkSubmission(submissionId, problem_id, code, time_limit);
     await callProcedure("update_submission_verdict", [submissionId, verdict.verdict, verdict.execution_time]);
-
-    res.status(201).json({ message: "Submission created", submissionId });
   } catch (e: any) {
     console.log(e.message);
     res.status(500).json({ message: e.message });
