@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
-import callProcedure from "./callProcedure";
-import { runCode } from "./CallRunnerService";
-import { SubmissionResult } from "../types/submissions";
 import { RowDataPacket } from "mysql2";
+import { SubmissionResult } from "../types/submissions";
+import callProcedure from "./callProcedure";
+import { runCode } from "./callRunnerService";
 
 dotenv.config();
 
@@ -47,7 +47,6 @@ async function checkSubmission(submission_id: number, problem_id: number, code: 
           execution_time: executionTime
         };
       }
-      console.log(executionTime);
     }
     return {
       verdict: "AC",

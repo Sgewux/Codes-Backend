@@ -1,16 +1,14 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import dotenv from "dotenv";
 import express from "express";
 import authRoutes from "./routes/auth.routes";
-import testRoutes from "./routes/test.routes";
-import problemsRoutes from "./routes/problems.routes";
 import usersRoutes from "./routes/contestants.routes";
-import userRoutes from "./routes/user.routes";
 import CRUDRoutes from "./routes/CRUD.routes";
-import submissionRoutes from "./routes/submissions.routes"
-
-
-import dotenv from "dotenv";
+import problemsRoutes from "./routes/problems.routes";
+import submissionRoutes from "./routes/submissions.routes";
+import customtestRoutes from "./routes/customtest.routes";
+import userRoutes from "./routes/user.routes";
 
 
 const app = express();
@@ -27,14 +25,12 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-
 app.use(authRoutes);
-app.use(testRoutes);
 app.use(usersRoutes);
 app.use(problemsRoutes);
 app.use(userRoutes);
 app.use(CRUDRoutes);
 app.use(submissionRoutes);
-
+app.use(customtestRoutes)
 
 export default app;
