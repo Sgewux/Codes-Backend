@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { Role, TokenData } from "../types/auth";
 
 const checkAuth = (requiredRoles: Role[] = []) => {
-  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  return async (req: Request<any,any,any,any>, res: Response, next: NextFunction): Promise<void> => {
     try {
       const token = req.cookies.token;
 

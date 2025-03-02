@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { ContestantActivity, GetContestantsQuery, SearchContestantQuery } from "../types/contestants";
 import callProcedure from "../libs/callProcedure";
+import { checkAuth } from "../middlewares/auth.middlewares";
 
 const router = Router();
 
@@ -35,16 +36,16 @@ router.get("/contestant/:handle/activity", async (req:Request, res:Response ): P
   
 });
 router.get(
-  "/contestants", 
+  "/contestants", checkAuth(["contestant"]),
   async (req:Request<any, any, any, GetContestantsQuery>, res:Response ): Promise<void> => {
-    const { pageLen, page, user, filter } = req.query;
+    const { pageLen, page, filter } = req.query;
 
     if ((pageLen && !isNaN(pageLen)) && (page && !isNaN(page)) && (filter == "all" || filter == "friends")){
 
       try {
         const [count, result, _] = await callProcedure(
           "get_user_summary_for_user",
-          [user, filter, pageLen, (page-1) * pageLen]
+          [req.user?.handle, filter, pageLen, (page-1) * pageLen]
         );
   
         let resBody = {
@@ -65,16 +66,16 @@ router.get(
 });
 
 router.get(
-  "/contestants/search",
+  "/contestants/search", checkAuth(["contestant"]),
   async (req:Request<any, any, any, SearchContestantQuery>, res:Response): Promise<void> => {
-    const { pageLen, page, user, handle } = req.query;
+    const { pageLen, page, handle } = req.query;
 
     if ((pageLen && !isNaN(pageLen)) && (page && !isNaN(page)) && handle){
 
       try {
         const [count, result, _] = await callProcedure(
           "get_user_summary_by_handle",
-          [user, handle, pageLen, (page-1) * pageLen]
+          [req.user?.handle, handle, pageLen, (page-1) * pageLen]
         );
   
         let resBody = {
