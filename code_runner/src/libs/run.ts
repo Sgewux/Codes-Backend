@@ -25,7 +25,7 @@ async function run(id: number, code: string, input: string, time_limit: number):
     try {
       // Execute Bash Script
       const result: string = execSync(`bash -c "./src/CompileAndRun.sh ${tempDir.replace(/\\/g, "/")}/ main.cpp ${time_limit}s"`).toString(); // Script's echo is the execution time in ms
-      console.log("dos");
+
       exec.status = "OK";
       exec.execution_time = (parseFloat(result) / 1000).toFixed(3); // execution time in seconds
       exec.output = fs.readFileSync(path.join(tempDir, "out.txt"), "utf-8");
