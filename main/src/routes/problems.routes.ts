@@ -95,7 +95,7 @@ router.get("/problems/:id", async (req: Request, res: Response): Promise<void> =
 router.get("/problems/problemsetter/:handle", checkAuth(["problem_setter"]), async (req: Request, res: Response) => {
   const handle = req.user?.handle;
   try {
-    const data = await callProcedure("sp_read_problem_by_problemsetter_handle", [handle]);
+    const data = await callProcedure("read_problem_by_problemsetter_handle", [handle]);
     res.json({ problems : data[0] });
   } catch (e: any) {
     console.error(e);
@@ -112,7 +112,7 @@ router.post("/problems/", checkAuth(["problem_setter"]), async (req: Request, re
   }
 
   try {
-    await callProcedure("sp_create_problem", [name, statement, editorial, time_limit_seconds, memory_limit_mb, problemsetter_handle, input, output]);
+    await callProcedure("create_problem", [name, statement, editorial, time_limit_seconds, memory_limit_mb, problemsetter_handle, input, output]);
     res.status(201).json({ message: "OK" });
   } catch (e: any) {
     console.error("Error creating the problem:", e);
@@ -130,7 +130,7 @@ router.put("/problems/:id",checkAuth(["problem_setter"]), async (req: Request, r
   }
 
   try {
-    await callProcedure("sp_update_problem", [id, statement, editorial]);
+    await callProcedure("update_problem", [id, statement, editorial]);
 
     res.json({ success: true, message: "OK" });
   } catch (e: any) {
@@ -143,7 +143,7 @@ router.put("/problems/:id",checkAuth(["problem_setter"]), async (req: Request, r
 router.delete("/problems/:id",checkAuth(["problem_setter"]), async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    await callProcedure("sp_delete_problem", [Number(id)]);
+    await callProcedure("delete_problem", [Number(id)]);
     res.json({ success: true, message: "OK" });
   } catch (e: any) {
     console.error(e);

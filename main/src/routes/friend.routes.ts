@@ -19,7 +19,7 @@ router.post("/friend/", checkAuth(["contestant"]), async (req: Request, res: Res
     };
 
     try {
-        await callProcedure("sp_create_friend", [newFriend.handle, newFriend.friendHandle]);
+        await callProcedure("create_friend", [newFriend.handle, newFriend.friendHandle]);
         res.status(201).json({ success: true, message: "Friendship created successfully." });
     } catch (e: any) {
         console.error("Error creating friendship:", e);
@@ -38,7 +38,7 @@ router.delete("/friend/", checkAuth(["contestant"]), async (req: Request, res: R
     }
 
     try {
-        await callProcedure("sp_delete_friend", [handle, friendHandle]);
+        await callProcedure("delete_friend", [handle, friendHandle]);
         res.status(200).json({ success: true, message: "Friendship deleted successfully." });
     } catch (e: any) {
         console.error("Error deleting friendship:", e);
