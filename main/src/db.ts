@@ -1,5 +1,10 @@
 import { Connection, createConnection } from "mysql2/promise";
 
+/**
+ * Establishes a connection to the MySQL database.
+ * @returns A Promise resolving to a MySQL connection.
+ * @throws An error if the connection fails.
+ */
 async function getConnection(): Promise<Connection> {
   try {
     return await createConnection({
