@@ -20,7 +20,7 @@ app.use(
     origin: process.env.MAIN_URL,
   })
 );
-app.use(express.json());
+app.use(express.json({limit:"50mb"}));
 
 /**
  * Executes a C++ code snippet with a given input and returns the result.
