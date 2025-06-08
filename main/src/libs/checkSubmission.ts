@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import { RowDataPacket } from "mysql2";
 import { SubmissionResult } from "../types/submissions";
 import callProcedure from "./callProcedure";
-import { runCode } from "./callRunnerService";
+import { runCode } from "./CallRunnerService";
 
 dotenv.config();
 
