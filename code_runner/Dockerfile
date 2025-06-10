@@ -6,6 +6,9 @@ RUN apk upgrade
 RUN apk add --no-cache bash
 RUN apk add --no-cache g++
 
+#Intall coreutils because we want to use the timeout from coreutils rather than from busybox
+RUN apk add --no-cache coreutils
+
 COPY . ./app
 WORKDIR ./app
 RUN npm install
